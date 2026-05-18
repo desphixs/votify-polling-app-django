@@ -17,4 +17,10 @@ urlpatterns = [
     # Think of this path like a secure ballot dropbox slot. When a voter drops their dynamic
     # choice sheet into '/poll/4/vote/', Django forwards their card directly to the 'vote' official.
     path('poll/<int:poll_id>/vote/', views.vote, name='vote'),
+
+    # Think of this path like a digital dashboard screen showing a real-time graph.
+    # When a community member visits '/poll/4/results/', Django pulls the latest tallies
+    # and displays the visual progress bars.
+    path('poll/<int:poll_id>/results/', views.poll_results, name='poll_results'),
 ]
+

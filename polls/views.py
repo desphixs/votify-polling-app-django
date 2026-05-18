@@ -111,3 +111,44 @@ def vote(request, poll_id):
     # If the request method is not POST (e.g. GET), we simply redirect them back
     # to the poll's details page.
     return redirect('poll_detail', poll_id=poll.id)
+
+
+# Think of a Results View function like an auditor certifying election results.
+# The auditor gathers all option choices (ballot cards), adds up the total sum of all votes
+# cast across the entire poll, and calculates the exact percentage portion that went to
+# each individual choice so it can be graphed.
+def poll_results(request, poll_id):
+    # We fetch the exact Poll corresponding to the dynamic ID in the path or return a 404 security guard.
+    poll = get_object_or_404(Poll, pk=poll_id)
+
+    # We query all the relational Choices tethered to this specific Poll record.
+    choices = poll.choices.all()
+
+    # Step 4: Write a small Python loop to add up the total number of votes across all choices.
+    # Think of this like opening the ballot box and counting the total sheets inside.
+    total_votes = 0
+    for choice in choices:
+        total_votes += choice.votes
+
+    # Step 5: Loop through the choices again and calculate their share of the vote.
+    # If total votes are zero, we set the percentage share to 0% to avoid division-by-zero math crashes!
+    for choice in choices:
+        if total_votes > 0:
+            # We calculate the fraction share and multiply by 100.
+            # We round to one decimal place so the visual display is clean and professional.
+            choice.percentage = round((choice.votes / total_votes) * 100, 1)
+        else:
+            # If nobody has cast a ballot yet, everyone sits at exactly 0% share.
+            choice.percentage = 0
+
+    # Think of the context like our serving tray again. We plate our poll, our choices with
+    # their calculated percentages, and the total vote count onto the tray.
+    context = {
+        'poll': poll,
+        'choices': choices,
+        'total_votes': total_votes,
+    }
+
+    # We hand the tray to the results template (polls/poll_results.html).
+    return render(request, 'polls/poll_results.html', context)
+
