@@ -25,7 +25,7 @@
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <!-- Logo linking back to homepage -->
-                <a href="/" class="flex items-center gap-2 hover:opacity-90 transition-opacity">
+                <a href="{% url 'poll_list' %}" class="flex items-center gap-2 hover:opacity-90 transition-opacity">
                     <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-md shadow-indigo-100">
                         <i class="fa-solid fa-square-poll-vertical text-white text-lg"></i>
                     </div>
@@ -49,7 +49,7 @@
     <main class="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <!-- Back Link Navigation -->
         <div class="mb-6">
-            <a href="/" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-indigo-600 transition-colors group">
+            <a href="{% url 'poll_list' %}" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-indigo-600 transition-colors group">
                 <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i> Back to feed
             </a>
         </div>
@@ -91,7 +91,7 @@
                     <p class="text-slate-500 text-xs leading-relaxed max-w-sm mx-auto mb-4">
                         This community decision closed on {{ poll.expiration_date|date:"M d, Y H:i" }} and is no longer accepting new responses.
                     </p>
-                    <a href="/poll/{{ poll.id }}/results/" class="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-slate-950 hover:bg-slate-900 transition-all shadow-sm">
+                    <a href="{% url 'poll_results' poll.id %}" class="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-slate-950 hover:bg-slate-900 transition-all shadow-sm">
                         <i class="fa-solid fa-chart-simple text-[10px]"></i> View Final Standings
                     </a>
                 </div>
@@ -111,8 +111,8 @@
 
             {% else %}
                 <!-- Active Voting Form -->
-                <!-- The form POSTs to /poll/{{ poll.id }}/vote/ to securely increment the database count. -->
-                <form action="/poll/{{ poll.id }}/vote/" method="POST" class="space-y-6">
+                <!-- The form POSTs to the vote view to securely increment the database count. -->
+                <form action="{% url 'vote' poll.id %}" method="POST" class="space-y-6">
                     <!-- CSRF Token: Django's mandatory security keycard to block Cross-Site Request Forgery attacks -->
                     {% csrf_token %}
 
@@ -151,7 +151,7 @@
                             </button>
                         </div>
                     {% endif %}
-                </form>
+                </>
             {% endif %}
         </div>
     </main>
